@@ -13,3 +13,14 @@ You'll see `team-chat` blocked once it hits its \$0.05 cap, while `team-eval`
 (small model + batch) stays cheap. To use a real provider, replace the `# MOCK
 response` block in `tracker.py` with a real `litellm.completion(...)` / SDK call
 and read true token counts from the response.
+
+## Phần đã hoàn thiện
+
+Từ thư mục gốc: `.venv/bin/python bonus/litellm_tracker/demo.py`.
+Lưu request được chấp nhận, budget, chi phí và lý do block vào
+`outputs/bonus/tracker.json`. Budget check và cập nhật spend được khóa cùng nhau,
+tránh vượt cap do request đồng thời. Request bị từ chối không cộng phí.
+
+Đây là backend mock với token ước tính theo ký tự, không phải proxy LiteLLM thật.
+Nếu nối provider cần reserve chi phí tối đa trước call, đối soát usage thực tế,
+lưu spend bền vững và quản lý kỳ ngân sách; tracker hiện dùng bộ nhớ một process.

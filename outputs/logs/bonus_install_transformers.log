@@ -1,0 +1,23 @@
+WARNING: The directory '/home/thach2207/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Looking in links: /tmp/gpufinops-wheels
+Processing /tmp/gpufinops-wheels/transformers-4.57.6-py3-none-any.whl (from -r bonus/local_model/requirements.txt (line 2))
+Requirement already satisfied: filelock in ./.venv/lib/python3.13/site-packages (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2)) (3.32.3)
+Processing /tmp/gpufinops-wheels/huggingface_hub-0.36.2-py3-none-any.whl (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Requirement already satisfied: numpy>=1.17 in ./.venv/lib/python3.13/site-packages (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2)) (2.5.4)
+Requirement already satisfied: packaging>=20.0 in ./.venv/lib/python3.13/site-packages (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2)) (26.3)
+Processing /tmp/gpufinops-wheels/pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Processing /tmp/gpufinops-wheels/regex-2026.9.29-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Processing /tmp/gpufinops-wheels/requests-2.34.2-py3-none-any.whl (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Processing /tmp/gpufinops-wheels/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Processing /tmp/gpufinops-wheels/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Processing /tmp/gpufinops-wheels/tqdm-4.70.1-py3-none-any.whl (from transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Requirement already satisfied: fsspec>=2023.5.0 in ./.venv/lib/python3.13/site-packages (from huggingface-hub<1.0,>=0.34.0->transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2)) (2026.7.0)
+Processing /tmp/gpufinops-wheels/hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (from huggingface-hub<1.0,>=0.34.0->transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Requirement already satisfied: typing-extensions>=3.7.4.3 in ./.venv/lib/python3.13/site-packages (from huggingface-hub<1.0,>=0.34.0->transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2)) (4.16.0)
+Processing /tmp/gpufinops-wheels/charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from requests->transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Processing /tmp/gpufinops-wheels/idna-3.20-py3-none-any.whl (from requests->transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Processing /tmp/gpufinops-wheels/urllib3-2.8.0-py3-none-any.whl (from requests->transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Processing /tmp/gpufinops-wheels/certifi-2026.7.22-py3-none-any.whl (from requests->transformers<5,>=4.45->-r bonus/local_model/requirements.txt (line 2))
+Installing collected packages: urllib3, tqdm, safetensors, regex, pyyaml, idna, hf-xet, charset_normalizer, certifi, requests, huggingface-hub, tokenizers, transformers
+
+Successfully installed certifi-2026.7.22 charset_normalizer-3.5.2 hf-xet-1.7.0 huggingface-hub-0.36.2 idna-3.20 pyyaml-6.0.3 regex-2026.9.29 requests-2.34.2 safetensors-0.8.0 tokenizers-0.22.2 tqdm-4.70.1 transformers-4.57.6 urllib3-2.8.0

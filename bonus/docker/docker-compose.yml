@@ -8,25 +8,32 @@ services:
     environment:
       LAB_DATA_DIR: /data
       PORT: "9101"
+      HOST: "0.0.0.0"
     volumes:
       - ./exporter.py:/app/exporter.py:ro
       - ../../data:/data:ro
-    ports: ["9101:9101"]
+    ports: ["127.0.0.1:9101:9101"]
 
   prometheus:
     image: prom/prometheus:latest
+    user: "${LAB_UID:-1000}:${LAB_GID:-1000}"
     volumes:
+      - ../../.bonus-state/prometheus:/prometheus
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    ports: ["9090:9090"]
+    ports: ["127.0.0.1:9090:9090"]
     depends_on: [exporter]
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.6.0
+    user: "${LAB_UID:-1000}:${LAB_GID:-1000}"
+    tmpfs:
+      - /tmp:size=64m
     environment:
       GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
     volumes:
+      - ../../.bonus-state/grafana:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
-    ports: ["3000:3000"]
+    ports: ["127.0.0.1:3000:3000"]
     depends_on: [prometheus]

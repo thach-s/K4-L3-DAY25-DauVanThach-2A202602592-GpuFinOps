@@ -8,6 +8,7 @@ _sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)
 import os
 from missions._common import num, catalog_by_type, ROOT
 from finops import report, sustainability
+from missions._analysis_report import analysis
 from missions import m1_efficiency_audit, m2_inference_levers, m3_purchasing
 
 DAYS = 30
@@ -53,10 +54,17 @@ def run(verbose: bool = True) -> dict:
     }
 
     md = report.build_report(baseline, optimized, levers, sustainability=sust)
+    md += "\n" + analysis(r1, r2, r3)
+    if os.path.exists(os.path.join(ROOT, "outputs", "bonus_report.md")):
+        md += "\n## Bonus\n\nXem [báo cáo ba phần bonus](bonus_report.md) và evidence trong `outputs/bonus/`.\n"
     out_md = os.path.join(ROOT, "outputs", "report.md")
     os.makedirs(os.path.dirname(out_md), exist_ok=True)
     with open(out_md, "w") as f:
         f.write(md)
+    with open(os.path.join(ROOT, "outputs", "writeup.md"), "w") as f:
+        f.write("# Bài viết — Đậu Văn Thạch — 2A202602592\n\n"
+                "Lab 25: đo chi phí theo token, phân tích hiệu quả GPU và hoàn thiện hai phần mở rộng.\n"
+                + analysis(r1, r2, r3))
     png = report.savings_waterfall(levers, os.path.join(ROOT, "outputs", "savings.png"))
 
     if verbose:

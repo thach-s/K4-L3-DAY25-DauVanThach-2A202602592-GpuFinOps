@@ -29,7 +29,7 @@ def build_report(baseline_usd: float, optimized_usd: float, levers: dict,
             "",
             f"- Energy per query: {sustainability.get('wh_per_query', 0):.2f} Wh",
             f"- Carbon per query: {sustainability.get('carbon_g', 0):.3f} gCO2e",
-            f"- Cheapest+cleanest region: {sustainability.get('best_region', 'n/a')}",
+            f"- Cleanest region: {sustainability.get('best_region', 'n/a')}",
         ]
     lines += ["", "_Figures are June-2026 as-of snapshots; re-baseline before acting._"]
     return "\n".join(lines)
@@ -46,9 +46,18 @@ def savings_waterfall(levers: dict, path: str) -> str:
     names = list(levers.keys())
     vals = [levers[n] for n in names]
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    ax.bar(names, vals, color="#2e548a")
+    bottoms = []
+    cumulative = 0
+    for value in vals:
+        bottoms.append(cumulative)
+        cumulative += value
+    ax.bar(names, vals, bottom=bottoms, color="#2e548a")
+    for i, (value, bottom) in enumerate(zip(vals, bottoms)):
+        ax.text(i, bottom + value / 2, f"${value:,.0f}", ha="center", va="center", fontsize=9)
+        if i < len(vals) - 1:
+            ax.plot([i + .4, i + .6], [bottom + value] * 2, color="gray", linewidth=1)
     ax.set_ylabel("Savings (USD / month)")
-    ax.set_title("GPU cost savings by FinOps lever")
+    ax.set_title("Cumulative projected GPU cost savings")
     plt.xticks(rotation=20, ha="right")
     plt.tight_layout()
     fig.savefig(path, dpi=110)

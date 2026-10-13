@@ -1,12 +1,152 @@
 {
-  "title": "Lab 25 — GPU Cost & Efficiency",
+  "title": "Lab 25 \u2014 GPU Cost & Efficiency",
   "schemaVersion": 39,
   "panels": [
-    {"type": "timeseries", "title": "GPU-Util % (the 'busy' clock)", "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
-     "targets": [{"expr": "gpu_util_pct"}]},
-    {"type": "timeseries", "title": "MFU (real efficiency)", "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
-     "targets": [{"expr": "gpu_mfu"}]},
-    {"type": "bargauge", "title": "Wasted $/hr (paid FLOPs not used)", "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
-     "targets": [{"expr": "gpu_wasted_cost_usd_per_hr"}]}
-  ]
+    {
+      "type": "timeseries",
+      "title": "GPU-Util % (the 'busy' clock)",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "gpu_util_pct",
+          "refId": "A",
+          "legendFormat": "{{gpu_id}}"
+        }
+      ],
+      "id": 1,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lab25-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "MFU (real efficiency)",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "gpu_mfu",
+          "refId": "A",
+          "legendFormat": "{{gpu_id}}"
+        }
+      ],
+      "id": 2,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lab25-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "bargauge",
+      "title": "Unused FLOPs capacity cost proxy ($/hr)",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "gpu_wasted_cost_usd_per_hr",
+          "refId": "A",
+          "legendFormat": "{{gpu_id}}"
+        }
+      ],
+      "id": 3,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lab25-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Memory bandwidth utilization",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lab25-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "gpu_mbu",
+          "refId": "A",
+          "legendFormat": "{{gpu_id}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Average GPU power",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "lab25-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "gpu_power_w",
+          "refId": "A",
+          "legendFormat": "{{gpu_id}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt"
+        },
+        "overrides": []
+      }
+    }
+  ],
+  "uid": "lab25-gpu-finops",
+  "refresh": "10s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  }
 }

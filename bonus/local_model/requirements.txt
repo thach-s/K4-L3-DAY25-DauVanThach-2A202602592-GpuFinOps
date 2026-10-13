@@ -1,0 +1,2 @@
+# Install torch CPU separately using the command in README.md.
+transformers>=4.45,<5

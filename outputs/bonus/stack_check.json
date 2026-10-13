@@ -1,0 +1,199 @@
+{
+  "status": "completed",
+  "grafana_health": {
+    "database": "ok",
+    "version": "11.6.0",
+    "commit": "d2fdff9ee4d75c74bfd3a97c18a0b8e4d029f06e"
+  },
+  "datasource_health": {
+    "details": {
+      "application": "Prometheus",
+      "features": {
+        "rulerApiEnabled": false
+      }
+    },
+    "message": "Successfully queried the Prometheus API.",
+    "status": "OK"
+  },
+  "dashboard_title": "Lab 25 \u2014 GPU Cost & Efficiency",
+  "dashboard_panels": 5,
+  "prometheus_targets": [
+    {
+      "discoveredLabels": {
+        "__address__": "exporter:9101",
+        "__always_scrape_classic_histograms__": "false",
+        "__convert_classic_histograms_to_nhcb__": "false",
+        "__metrics_path__": "/metrics",
+        "__scheme__": "http",
+        "__scrape_interval__": "10s",
+        "__scrape_native_histograms__": "false",
+        "__scrape_timeout__": "10s",
+        "job": "gpu-cost-exporter"
+      },
+      "labels": {
+        "instance": "exporter:9101",
+        "job": "gpu-cost-exporter"
+      },
+      "scrapePool": "gpu-cost-exporter",
+      "scrapeUrl": "http://exporter:9101/metrics",
+      "globalUrl": "http://exporter:9101/metrics",
+      "lastError": "",
+      "lastScrape": "2026-10-13T05:07:45.914591678Z",
+      "lastScrapeDuration": 0.010794456,
+      "health": "up",
+      "scrapeInterval": "10s",
+      "scrapeTimeout": "10s"
+    }
+  ],
+  "gpu_mfu_query": {
+    "status": "success",
+    "data": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-h100-0",
+            "gpu_type": "H100",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.417"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-h100-1",
+            "gpu_type": "H100",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.4084"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-h100-2",
+            "gpu_type": "H100",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.4011"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-h100-3",
+            "gpu_type": "H100",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.4273"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-h100-4",
+            "gpu_type": "H100",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.1943"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-h100-5",
+            "gpu_type": "H100",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.2612"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-a100-0",
+            "gpu_type": "A100",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.2592"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-a100-1",
+            "gpu_type": "A100",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.2356"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-a10g-0",
+            "gpu_type": "A10G",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.2185"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-a10g-1",
+            "gpu_type": "A10G",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.2678"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "gpu_mfu",
+            "gpu_id": "gpu-l4-0",
+            "gpu_type": "L4",
+            "instance": "exporter:9101",
+            "job": "gpu-cost-exporter"
+          },
+          "value": [
+            1791868066.902,
+            "0.3021"
+          ]
+        }
+      ]
+    }
+  }
+}

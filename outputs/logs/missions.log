@@ -1,0 +1,149 @@
+== M1 Efficiency Audit ==
+GPU           type     util%    MFU    MBU  idle_h
+gpu-h100-4    H100      98.2  0.194  0.207       0
+gpu-a10g-0    A10G      25.0  0.218  0.235       0
+gpu-a100-1    A100      28.0  0.236  0.247       0
+gpu-a100-0    A100      31.4  0.259  0.276       0
+gpu-h100-5    H100      61.1  0.261  0.271       8
+gpu-a10g-1    A10G      96.9  0.268  0.302       0
+gpu-l4-0      L4        40.0  0.302  0.328       0
+gpu-h100-2    H100      94.3  0.401  0.423       0
+gpu-h100-1    H100      95.2  0.408   0.44       0
+gpu-h100-0    H100      94.4  0.417  0.446       0
+gpu-h100-3    H100      93.1  0.427  0.444       0
+
+GPU-Util LIES (util>=90% but MFU<30%): ['gpu-h100-4', 'gpu-a10g-1']
+Idle waste (1 day): $20.00  ->  $600/month
+
+Sequential lever costs ($/day): {'baseline': 48.87416100000006, 'cascade': 11.475642800000013, 'cache': 10.279188199999991, 'batch': 8.484622969999995}
+Reasoning budget: {'groups': {False: {'requests': 2199, 'cost': 7.08815872, 'wh': 1887.5613000000005}, True: {'requests': 201, 'cost': 1.3964642500000009, 'wh': 29787.744000000002}}, 'caps': {'0.1': {'rerouted_requests': 0, 'saved_usd': 0.0, 'saved_wh': 0.0}, '0.05': {'rerouted_requests': 81, 'saved_usd': 0.4142468955223881, 'saved_wh': 11932.443550746268}}, 'traffic_share': 0.08375, 'cost_share': 0.1645876611061719, 'energy_share': 0.9404090573990458}
+== M2 Inference Cost Levers ==
+requests=2400  tokens=7,533,027
+baseline  : $48.87/day   $6.488/1M-token
+optimized : $8.48/day   $1.126/1M-token
+savings   : 82.6%  (cascade + caching + batch)
+discount stack (batch + 100% cache): 0.050 of naive
+
+Carbon scheduling (actual job duration, rated GPU power): {'jobs': [{'job_id': 'job-train-llm', 'wh': 1568000.0, 'baseline_g': 595840.0, 'clean_g': 47040.0}, {'job_id': 'job-train-embed', 'wh': 80000.0, 'baseline_g': 30400.0, 'clean_g': 2400.0}, {'job_id': 'job-finetune', 'wh': 25200.0, 'baseline_g': 9576.0, 'clean_g': 756.0}, {'job_id': 'job-dev-sandbox', 'wh': 52800.0, 'baseline_g': 20064.0, 'clean_g': 1584.0}, {'job_id': 'job-batch-eval', 'wh': 63000.0, 'baseline_g': 23940.0, 'clean_g': 1890.0}], 'regions': [{'region': 'us-east-1', 'price_kwh': 0.12, 'carbon_kwh': 380, 'electricity_usd': 214.67999999999998, 'carbon_g': 679820.0}, {'region': 'us-west-2', 'price_kwh': 0.07, 'carbon_kwh': 120, 'electricity_usd': 125.23000000000002, 'carbon_g': 214680.0}, {'region': 'europe-north1', 'price_kwh': 0.09, 'carbon_kwh': 30, 'electricity_usd': 161.01, 'carbon_g': 53670.0}, {'region': 'europe-central2', 'price_kwh': 0.18, 'carbon_kwh': 660, 'electricity_usd': 322.02, 'carbon_g': 1180740.0}, {'region': 'us-east-wa', 'price_kwh': 0.055, 'carbon_kwh': 90, 'electricity_usd': 98.395, 'carbon_g': 161010.0}], 'total_wh': 1789000.0}
+== M3 Purchasing Strategy ==
+break-even utilization @ 45% reserved discount = 55%
+job               gpu    tier          on-demand   optimized
+job-train-llm     H100   spot       $     12,000$      7,596
+job-train-embed   A100   spot       $      2,148$      1,393
+job-finetune      H100   spot       $        900$        570
+job-infer-chat    A10G   reserved   $      4,320$      2,592
+job-infer-rag     A100   reserved   $      3,866$      2,160
+job-infer-search  L4     reserved   $      1,728$        972
+job-dev-sandbox   A10G   spot       $        480$        203
+job-batch-eval    H100   spot       $        225$        142
+
+monthly: on-demand $25,667 -> optimized $15,627  (39.1% saved)
+
+== M4 Cost Allocation ==
+cost by team ($/day):
+  assistant    $    2.59
+  search       $    2.49
+  eval         $    1.79
+  rag          $    1.60
+tag coverage: 92%  ->  chargeback ready? True
+FOCUS export -> outputs/focus_export.csv (50 rows)
+
+== M5 Optimization Report ==
+# NimbusAI — GPU Cost Optimization Report
+
+**Period:** monthly
+**Baseline spend:** $27,133
+**Optimized spend:** $14,626
+**Projected savings:** $12,507  (**46%**)
+
+## Savings by lever
+
+| Lever | Savings (USD) |
+|---|---|
+| Inference (cascade/cache/batch) | $1,212 |
+| Purchasing (spot/reserved) | $10,040 |
+| Right-size util-lies | $655 |
+| Kill idle GPUs | $600 |
+
+## Sustainability
+
+- Energy per query: 0.24 Wh
+- Carbon per query: 0.091 gCO2e
+- Cleanest region: europe-north1
+
+_Figures are June-2026 as-of snapshots; re-baseline before acting._
+
+## Phạm vi và giả định
+
+Dữ liệu tổng hợp seed=25, giá và cường độ carbon minh họa tháng 6/2026; không phải báo giá hiện hành. M2 là một ngày traffic, nhân 30 để lấy run-rate tháng. M3 giả định mỗi workload lặp lại 30 ngày; cột days chỉ dùng cho kịch bản carbon theo thời lượng job thực tế.
+
+Tổng đầu báo cáo giữ kịch bản giảng dạy M5: cộng chi phí API và GPU như hai ngân sách riêng. Chưa có ánh xạ telemetry → workload nên right-size và idle là cơ hội bổ sung, chưa chứng minh độc lập với purchasing. Tổng này là dự phóng, không phải tiết kiệm đã thực hiện. Nếu API và GPU phục vụ cùng traffic, phải chọn một mô hình chi phí để tránh tính hai lần.
+
+## Inference: cùng số token, từng đòn bẩy nối tiếp
+
+| Bước | USD/ngày | USD/1M-token | Tiết kiệm tăng thêm USD/tháng |
+|---|---:|---:|---:|
+| baseline | 48.8742 | 6.488 | 0.00 |
+| cascade | 11.4756 | 1.523 | 1121.96 |
+| cache | 10.2792 | 1.365 | 35.89 |
+| batch | 8.4846 | 1.126 | 53.84 |
+
+Kịch bản chỉ gồm inference + purchasing: $27,133.22 → $15,881.54/tháng (41.5% giảm); chưa cộng right-size/idle. GPU không có số token tương ứng nên không quy toàn bộ hóa đơn GPU về USD/1M-token.
+
+## Hiệu quả GPU và thứ tự hành động
+
+GPU-Util đo tỷ lệ thời gian kernel hoạt động, không đo lượng FLOPs hữu ích. Kernel chờ bộ nhớ hoặc overhead vẫn có thể làm GPU-Util cao. Telemetry phát hiện bất thường nhưng chưa đủ kết luận nguyên nhân; cần profiler và đo throughput/latency.
+
+- gpu-h100-4: GPU-Util 98.2%, MFU 0.194, MBU 0.207.
+- gpu-a10g-1: GPU-Util 96.9%, MFU 0.268, MBU 0.302.
+
+Idle: $20.00/ngày, $600.00/tháng. Hạ GPU một bậc là giả thuyết; phải kiểm tra VRAM, bandwidth, chất lượng và SLA trước khi tính savings thực tế.
+
+1. Tắt GPU idle theo lịch và xác minh tag trước chargeback; đo hóa đơn sau thay đổi.
+2. Thử cascade trên tập đánh giá chất lượng, rồi cache; chỉ batch tác vụ chấp nhận độ trễ. Cascade đóng góp lớn nhất trong ba lever inference.
+3. Checkpoint cho spot; chỉ commit reserved khi có nhu cầu dài hạn. M3 tính reserved theo giờ sử dụng, chưa tính đầy đủ giờ nhàn rỗi/cam kết 3 năm, nên cần xác minh hợp đồng trước triển khai.
+
+## Extension 4 — Ngân sách reasoning
+
+| Traffic | Request | USD/ngày | Wh/ngày |
+|---|---:|---:|---:|
+| Thông thường | 2199 | 7.0882 | 1887.56 |
+| Reasoning | 201 | 1.3965 | 29787.74 |
+
+Reasoning chiếm 8.38% request, 16.46% chi phí optimized và 94.04% năng lượng. Hệ số 80× là giả định lab trên cùng số token; output reasoning còn dài 6× trong bộ sinh dữ liệu, không phải phép đo điện thực tế.
+
+- Cap 10%: chuyển 0 request; tiết kiệm kỳ vọng $0.0000/ngày và 0.00 Wh/ngày.
+- Cap 5%: chuyển 81 request; tiết kiệm kỳ vọng $0.4142/ngày và 11932.44 Wh/ngày.
+
+Quy tắc đề xuất: chỉ bật reasoning khi tác vụ nhiều bước và đường trả lời thường không đạt kiểm tra chất lượng; giữ quyền ưu tiên cho tác vụ bắt buộc. Kịch bản cap chọn ngẫu nhiên kỳ vọng, giữ input/model/cache/batch, giảm output về 1/6 và bỏ multiplier năng lượng. Chưa có complexity/confidence trong dataset nên chưa thể kiểm chứng chất lượng; không cộng savings này vào M5.
+
+## Extension 5 — Lịch chạy theo carbon
+
+| Job có thể gián đoạn | kWh | CO2e us-east-1 (kg) | CO2e europe-north1 (kg) |
+|---|---:|---:|---:|
+| job-train-llm | 1568.00 | 595.84 | 47.04 |
+| job-train-embed | 80.00 | 30.40 | 2.40 |
+| job-finetune | 25.20 | 9.58 | 0.76 |
+| job-dev-sandbox | 52.80 | 20.06 | 1.58 |
+| job-batch-eval | 63.00 | 23.94 | 1.89 |
+
+| Vùng | USD/kWh | gCO2e/kWh | Điện USD | CO2e kg |
+|---|---:|---:|---:|---:|
+| us-east-1 | 0.120 | 380 | 214.68 | 679.82 |
+| us-west-2 | 0.070 | 120 | 125.23 | 214.68 |
+| europe-north1 | 0.090 | 30 | 161.01 | 53.67 |
+| europe-central2 | 0.180 | 660 | 322.02 | 1180.74 |
+| us-east-wa | 0.055 | 90 | 98.39 | 161.01 |
+
+Chuyển sang europe-north1: giảm 626.15 kgCO2e (92.11%) và $53.67 tiền điện trong thời lượng các job. Vùng rẻ nhất là us-east-wa, vùng sạch nhất là europe-north1; không có một vùng đồng thời tối thiểu cả hai. us-west-2 là lựa chọn trung gian trong bảng.
+
+Năng lượng = giờ × số GPU × công suất định mức; chưa gồm PUE, CPU, mạng hay checkpoint. Giá điện không phải giá thuê GPU và thường đã nằm trong hóa đơn provider nên không cộng khoản này vào savings GPU. Trước khi di chuyển cần xét dữ liệu, egress, quota, GPU sẵn có và độ trễ; ưu tiên training/offline có thể gián đoạn.
+
+Năng lượng/truy vấn 0.24 Wh ở phần Sustainability là ví dụ 800 token không reasoning; bảng reasoning phía trên mới dùng toàn bộ token thực tế trong dataset.
+
+## Bonus
+
+Xem [báo cáo ba phần bonus](bonus_report.md) và evidence trong `outputs/bonus/`.
+
+
+Written: outputs/report.md + outputs/savings.png

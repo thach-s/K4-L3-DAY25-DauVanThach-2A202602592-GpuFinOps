@@ -1,0 +1,48 @@
+{
+  "model": "/tmp/gpufinops-tiny-gpt2",
+  "status": "completed",
+  "rate_usd_hr": 0.1,
+  "device": "cpu",
+  "threads": 2,
+  "versions": {
+    "torch": "2.14.1+cpu",
+    "transformers": "4.57.6"
+  },
+  "samples": [
+    {
+      "seconds": 0.21850289899884956,
+      "output_tokens": 64,
+      "tokens_per_second": 292.90229234137973,
+      "usd_per_million_output_tokens": 0.09483632769047291
+    },
+    {
+      "seconds": 0.2238062179985718,
+      "output_tokens": 64,
+      "tokens_per_second": 285.9616706467396,
+      "usd_per_million_output_tokens": 0.09713811545076903
+    },
+    {
+      "seconds": 0.21222858600049221,
+      "output_tokens": 64,
+      "tokens_per_second": 301.56163788346385,
+      "usd_per_million_output_tokens": 0.09211310156271364
+    },
+    {
+      "seconds": 0.22151460600071005,
+      "output_tokens": 64,
+      "tokens_per_second": 288.92000015472956,
+      "usd_per_million_output_tokens": 0.09614349218780818
+    },
+    {
+      "seconds": 0.2143369250006799,
+      "output_tokens": 64,
+      "tokens_per_second": 298.5953073638477,
+      "usd_per_million_output_tokens": 0.09302817925376732
+    }
+  ],
+  "median_tokens_per_second": 292.90229234137973,
+  "median_usd_per_million_output_tokens": 0.09483632769047291,
+  "simulation_usd_per_million_all_tokens": 1.126,
+  "generated_text": "GPU FinOps means measuring cost per million tokens because factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors factors",
+  "limitations": "Tiny test model; no quality parity. Local cost uses output tokens only, simulation uses input+output. Assumed CPU rental rate, excludes idle/load/network/energy."
+}

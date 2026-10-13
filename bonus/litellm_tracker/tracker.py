@@ -4,7 +4,8 @@ The §10 "token tier" of cost observability: attribute $/request per key/team an
 HARD-STOP requests that would blow the budget. Mock backend — no API key needed.
 """
 from __future__ import annotations
-import os, sys, time
+import os, sys, time, math
+from threading import RLock
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -22,9 +23,12 @@ class BudgetExceeded(Exception):
 
 class CostTracker:
     def __init__(self, budgets: dict | None = None):
-        self.budgets = budgets or {}          # api_key -> monthly USD cap
+        self.budgets = {key: float(cap) for key, cap in (budgets or {}).items()}          # api_key -> monthly USD cap
         self.spend = defaultdict(float)       # api_key -> USD spent
         self.log = []
+        self._lock = RLock()
+        if any(not math.isfinite(float(cap)) or float(cap) < 0 for cap in self.budgets.values()):
+            raise ValueError("Budget caps must be finite and nonnegative")
 
     def _estimate_tokens(self, text: str) -> int:
         return max(1, len(text) // 4)         # ~4 chars/token rule of thumb
@@ -32,6 +36,17 @@ class CostTracker:
     def complete(self, api_key: str, model: str, prompt: str,
                  max_output_tokens: int = 256, cached_input_tokens: int = 0,
                  batch: bool = False) -> dict:
+        if model not in MODEL_PRICES:
+            raise ValueError(f"Unknown model: {model}")
+        if not isinstance(max_output_tokens, int) or max_output_tokens < 0:
+            raise ValueError("max_output_tokens must be a nonnegative integer")
+        if not isinstance(cached_input_tokens, int) or cached_input_tokens < 0:
+            raise ValueError("cached_input_tokens must be a nonnegative integer")
+        # Atomically check and reserve cost so concurrent callers cannot exceed cap.
+        with self._lock:
+            return self._complete(api_key, model, prompt, max_output_tokens, cached_input_tokens, batch)
+
+    def _complete(self, api_key, model, prompt, max_output_tokens, cached_input_tokens, batch):
         in_tok = self._estimate_tokens(prompt)
         out_tok = max_output_tokens
         pin, pout = MODEL_PRICES[model]
@@ -47,7 +62,8 @@ class CostTracker:
         self.log.append(rec)
         # MOCK response (swap this block for a real provider call)
         rec["text"] = f"[mock {model}] ok ({in_tok} in / {out_tok} out)"
-        return rec
+        return dict(rec)
 
     def report(self) -> dict:
-        return {k: round(v, 4) for k, v in self.spend.items()}
+        with self._lock:
+            return {k: round(v, 4) for k, v in self.spend.items()}
